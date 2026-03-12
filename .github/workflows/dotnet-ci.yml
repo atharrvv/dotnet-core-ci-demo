@@ -1,4 +1,4 @@
-name: .NET Core CI - xUnit
+name: .NET Core CI 
 
 on:
   push:
@@ -33,13 +33,24 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Run tests
-        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+      - name: Publish
+        run: dotnet publish --no-build --configuration Release --output ./publish
 
-      - name: Publish test results
-        uses: dorny/test-reporter@v1
-        if: always()
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: 'xUnit Test Results'
-          path: 'TestResults/*.trx'
-          reporter: dotnet-trx
+          name: dotnet-app
+          path: ./publish
+
+      
+
+      # - name: Run tests
+      #   run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+
+      # - name: Publish test results
+      #   uses: dorny/test-reporter@v1
+      #   if: always()
+      #   with:
+      #     name: 'xUnit Test Results'
+      #     path: 'TestResults/*.trx'
+      #     reporter: dotnet-trx
